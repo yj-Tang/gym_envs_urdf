@@ -36,7 +36,7 @@ pos0 = np.array([0.0, 0.1, 0.0])
 vel0 = np.array([1.0, 0.0, 0.0])
 
 # %%
-ob = env.reset(pos=pos0, vel=vel0)
+ob, info = env.reset(pos=pos0, vel=vel0)
 env.shuffle_goals()
 print(f"Initial observation : {ob}")
 gain_action = 1
@@ -47,7 +47,7 @@ for _ in range(N_STEPS):
     goal = ob['robot_0']['FullSensor']['goals'][1]['position']
     robot_position = ob['robot_0']['joint_state']['position']
     action = gain_action * (goal - robot_position)
-    ob, reward, done, info = env.step(action)
+    ob, reward, terminated, truncated, info = env.step(action)
     print(f"Reward : {reward}")
     # In observations, information about obstacles is stored in ob['obstacleSensor']
     history.append(ob)
