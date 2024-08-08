@@ -1,10 +1,11 @@
 import numpy as np
+
 from urdfenvs.urdf_common.urdf_env import UrdfEnv
 from urdfenvs.robots.generic_urdf import GenericUrdfReacher
 from urdfenvs.sensors.full_sensor import FullSensor
 from urdfenvs.scene_examples.goal import goal1
 from urdfenvs.urdf_common.reward import Reward
-
+from urdfenvs.wrappers.customized_flatten_observation import CustomizedFlattenObservation
 
 N_STEPS=1000
 
@@ -35,6 +36,8 @@ defaultAction = np.array([0.5, -0.0, 0.0])
 pos0 = np.array([0.0, 0.1, 0.0])
 vel0 = np.array([1.0, 0.0, 0.0])
 
+env = CustomizedFlattenObservation(env)
+
 # %%
 ob, info = env.reset(pos=pos0, vel=vel0)
 env.shuffle_goals()
@@ -44,8 +47,8 @@ gain_action = 1
 history = []
 for _ in range(N_STEPS):
     # Simple p-controller for goal reaching
-    goal = ob['robot_0']['FullSensor']['goals'][1]['position']
-    robot_position = ob['robot_0']['joint_state']['position']
+    goal = ob[0:3]
+    robot_position = ob[3:6]
     action = gain_action * (goal - robot_position)
     ob, reward, terminated, truncated, info = env.step(action)
     print(f"Reward : {reward}")
