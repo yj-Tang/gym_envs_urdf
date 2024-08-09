@@ -89,3 +89,10 @@ class CustomizedFlattenObservation(gym.ObservationWrapper):
         return flatten_dict_space(observation_space)
         
 
+    def reset(self, **kwargs):
+        obs, info = self.env.reset(**kwargs)
+        return self.observation(obs), info
+    
+    def step(self, action):
+        observation, reward, terminated, truncated, info = self.env.step(action)
+        return self.observation(observation), reward, terminated, truncated, info
