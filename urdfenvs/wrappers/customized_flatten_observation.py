@@ -1,7 +1,5 @@
 """Wrapper for flattening observations of an environment."""
-import gym
-import gymnasium
-import gym.spaces as spaces
+import gymnasium as gym
 import numpy as np
 
 # modify the class from gym.wrappers.FlattenObservation
@@ -29,7 +27,7 @@ class CustomizedFlattenObservation(gym.ObservationWrapper):
         """
         super().__init__(env)
         self.flattened_obs_space = self._custom_flatten_space(env.observation_space)
-        self.observation_space = spaces.flatten_space(self.flattened_obs_space)
+        self.observation_space = gym.spaces.flatten_space(self.flattened_obs_space)
 
     def observation(self, observation):
         """Flattens an observation.
@@ -43,7 +41,7 @@ class CustomizedFlattenObservation(gym.ObservationWrapper):
 
         flattened_obs = self._custom_flatten_ob(observation)
          
-        return spaces.flatten(self.flattened_obs_space, flattened_obs)
+        return gym.spaces.flatten(self.flattened_obs_space, flattened_obs)
     
     def _custom_flatten_ob(self, observation):
         # flatten the observation
@@ -68,14 +66,14 @@ class CustomizedFlattenObservation(gym.ObservationWrapper):
             items = []
             for k, v in d.items():
                 new_key = parent_key + sep + str(k) if parent_key else k
-                if isinstance(v, gymnasium.spaces.dict.Dict):
+                if isinstance(v, gym.spaces.dict.Dict):
                     items.extend(flatten_dict_space(v, new_key, sep=sep).items())
                 else:
-                    if isinstance(v, gymnasium.spaces.box.Box):
+                    if isinstance(v, gym.spaces.box.Box):
                         # change the dtype
                         # It seems that spaces.flatten_space() can not deal with 'Float64' type.
                         # Convert the `dType` of observation space to 'Float32'
-                        new_box = spaces.Box(
+                        new_box = gym.spaces.Box(
                             low=v.low,
                             high=v.high,
                             shape=v.shape,
@@ -84,7 +82,7 @@ class CustomizedFlattenObservation(gym.ObservationWrapper):
                         items.append((new_key, new_box))
                     else:
                         raise NotImplementedError("The type of observation is not supported.")
-            return spaces.Dict(items)
+            return gym.spaces.Dict(items)
         
         return flatten_dict_space(observation_space)
         
