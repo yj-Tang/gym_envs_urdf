@@ -248,7 +248,7 @@ class UrdfEnv(gym.Env):
         # Calculate the reward.
         # If there is no reward object, then the reward is 1.0.
         if self._reward_calculator is not None:
-            reward = self._reward_calculator.calculate_reward(ob)
+            reward = self._reward_calculator.calculate_reward(ob, self._info) 
         else:
             reward = 1.0
 
@@ -576,6 +576,8 @@ class UrdfEnv(gym.Env):
         """
         super().reset(seed=seed, options=options)
         self._t = 0.0
+        self._info = {}
+        self._done = False
         if mount_positions is None:
             mount_positions = np.tile(np.zeros(3), (len(self._robots), 1))
         self.mount_positions = mount_positions
