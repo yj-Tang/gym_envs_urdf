@@ -215,6 +215,11 @@ class UrdfEnv(gym.Env):
     def step(self, action: np.ndarray):
         step_start = time.perf_counter()
         self._t += self.dt
+
+        # initialize the info dict and the done flag
+        self._done = False 
+        self._info = {}
+
         # Feed action to the robot and get observation of robot's state
 
         if not self.action_space.contains(action):
@@ -576,8 +581,6 @@ class UrdfEnv(gym.Env):
         """
         super().reset(seed=seed, options=options)
         self._t = 0.0
-        self._info = {}
-        self._done = False
         if mount_positions is None:
             mount_positions = np.tile(np.zeros(3), (len(self._robots), 1))
         self.mount_positions = mount_positions
