@@ -253,9 +253,13 @@ class UrdfEnv(gym.Env):
         # Calculate the reward.
         # If there is no reward object, then the reward is 1.0.
         if self._reward_calculator is not None:
-            reward = self._reward_calculator.calculate_reward(ob, self._info) 
+            reward, goal_reached = self._reward_calculator.calculate_reward(ob, self._info) 
         else:
             reward = 1.0
+        if goal_reached:
+            self._done = True
+            message = f"Goal reached"    
+            self._info = {"Goal reached": message}
 
         if self._render:
             self.render()
@@ -606,6 +610,7 @@ class UrdfEnv(gym.Env):
             )
         self.reset_obstacles()
         self.reset_goals()
+        self.shuffle_goals()
         return self._get_ob(), self._info
 
     def render(self) -> None:
