@@ -1,5 +1,6 @@
 """Wrapper for clipping actions within a valid bound."""
 import numpy as np
+import torch
 
 import gymnasium as gym
 from gymnasium.spaces import Box
@@ -40,7 +41,14 @@ class CustomizedClipAction(gym.ActionWrapper, gym.utils.RecordConstructorArgs):
         Returns:
             The clipped action
         """
-        return np.clip(action, 
-                       self.action_space.low + 0.01*np.ones(self.action_space.shape), 
-                       self.action_space.high - 0.01*np.ones(self.action_space.shape)
-                       )
+
+        if isinstance(action, np.ndarray):
+            return np.clip(action,
+                        self.action_space.low + 0.01*np.ones(self.action_space.shape),
+                        self.action_space.high - 0.01*np.ones(self.action_space.shape))
+        elif isinstance(action, torch.Tensor):
+            return torch.clamp(action,
+                            torch.tensor(self.action_space.low).to(action.device) + 0.01,
+                            torch.tensor(self.action_space.high).to(action.device) - 0.01)
+        else:
+            raise TypeError("Action must be either a NumPy array or a PyTorch tensor")
