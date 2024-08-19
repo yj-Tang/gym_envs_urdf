@@ -237,17 +237,17 @@ class UrdfEnv(gym.Env):
         self.update_collision_links()
 
         p.stepSimulation(self._cid)
-        for robot_id, robot in enumerate(self._robots):
-            contacts = p.getContactPoints(robot._robot)
-            for contact_info in contacts:
-                body_b = contact_info[2]
-                if body_b in self._obsts:
-                    message = f"Collision occured at {round(self.t(), 2)} " \
-                        f"between robot {robot_id} and obstacle " \
-                        f"with id {body_b}"
-                    self._info = {"Collision": message}
-                    self._done = True
-                    break
+        # for robot_id, robot in enumerate(self._robots):
+        #     contacts = p.getContactPoints(robot._robot)
+        #     for contact_info in contacts:
+        #         body_b = contact_info[2]
+        #         if body_b in self._obsts:
+        #             message = f"Collision occured at {round(self.t(), 2)} " \
+        #                 f"between robot {robot_id} and obstacle " \
+        #                 f"with id {body_b}"
+        #             self._info = {"Collision": message}
+        #             self._done = True
+        #             break
         ob = self._get_ob()
 
         # Calculate the reward.
