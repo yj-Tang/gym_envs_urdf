@@ -29,14 +29,8 @@ def make_env_urdf(robot_name, goal, gamma, render=False):
         env.add_sensor(sensor, [0])
         env.set_spaces()
 
-        env = gym.wrappers.TimeLimit(env, max_episode_steps=200)
         env = CustomizedFlattenObservation(env)
-        env = gym.wrappers.RecordEpisodeStatistics(env)
-        # env = gym.wrappers.ClipAction(env)
         env = CustomizedClipAction(env)
-        env = gym.wrappers.NormalizeObservation(env)
-        # env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
-        # env = gym.wrappers.NormalizeReward(env, gamma=gamma)
         return env
     return thunk
 
