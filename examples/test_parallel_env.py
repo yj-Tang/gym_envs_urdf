@@ -4,7 +4,6 @@ import gymnasium as gym
 import torch
 import numpy as np
 
-from rl_algorithms.ppo_class import PPO, Agent
 from urdfenvs.urdf_common.urdf_env import UrdfEnv
 from urdfenvs.robots.generic_urdf import GenericUrdfReacher
 from urdfenvs.sensors.full_sensor import FullSensor
@@ -34,25 +33,16 @@ def make_env_urdf(robot_name, goal, gamma, render=False):
         return env
     return thunk
 
-robot_name = "pointRobot"
 gamma = 0.99
-capture_video = True
-eval_episodes = 10
-cuda = True
-device = torch.device("cuda" if torch.cuda.is_available() and cuda else "cpu")
-
-envs = gym.vector.SyncVectorEnv([make_env_urdf(robot_name, goal1, gamma, render=False) for i in range(3)])
-agent = Agent(envs).to(device)
-# agent.load_state_dict(torch.load(model_path, map_location=device))
-# agent.eval()
+envs = gym.vector.SyncVectorEnv([make_env_urdf("pointRobot", goal1, gamma, render=False) for i in range(3)])
 
 obs, _ = envs.reset()
 episodic_returns = []
-defaultAction = np.array([[1.335811  , 0.43066153, 1.283855 ], [1.335811  , 0.43066153, 1.283855 ], [1.335811  , 0.43066153, 1.283855 ]])
-# defaultAction = np.array([[8.335811  , 8.43066153, 8.283855 ]])
+defaultAction = np.array([[1.  , 0.4, 1. ], 
+                          [1.  , 0.4, 1. ], 
+                          [1.  , 0.4, 1. ]])
 
-eval_episodes = 800
-
+eval_episodes = 200
 for i in range(eval_episodes):
     print("i: ", i)
 
