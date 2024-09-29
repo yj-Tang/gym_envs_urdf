@@ -610,7 +610,7 @@ class UrdfEnv(gym.Env):
             )
         self.reset_obstacles()
         self.reset_goals()
-        self.shuffle_goals()
+        # self.shuffle_goals()
         return self._get_ob(), self._info
 
     def render(self) -> None:
