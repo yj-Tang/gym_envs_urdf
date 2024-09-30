@@ -52,3 +52,6 @@ class CustomizedClipAction(gym.ActionWrapper, gym.utils.RecordConstructorArgs):
                             torch.tensor(self.action_space.high).to(action.device) - 0.01)
         else:
             raise TypeError("Action must be either a NumPy array or a PyTorch tensor")
+
+    def reset(self, **kwargs):
+        return self.env.reset(**kwargs)
